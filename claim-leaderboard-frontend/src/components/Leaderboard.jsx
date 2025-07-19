@@ -14,9 +14,9 @@ const Leaderboard = ({ refreshFlag }) => {
         const res = await axios.get(`${API_BASE}/api/users`);
         const sortedUsers = res.data.sort((a, b) => b.totalPoints - a.totalPoints);
         setUsers(sortedUsers);
-        setLoading(false);
       } catch (err) {
         console.error("Error fetching leaderboard:", err);
+      } finally {
         setLoading(false);
       }
     };
@@ -29,7 +29,7 @@ const Leaderboard = ({ refreshFlag }) => {
       <h2 className="text-xl font-bold mb-4">🏆 Leaderboard</h2>
 
       {loading ? (
-        <p className="text-gray-500 text-center">Loading leaderboard...</p>
+        <p className="text-center text-gray-500">Loading leaderboard...</p>
       ) : users.length === 0 ? (
         <p className="text-center text-red-500">No users found.</p>
       ) : (
@@ -39,9 +39,11 @@ const Leaderboard = ({ refreshFlag }) => {
               key={user._id}
               className={`flex justify-between items-center p-2 rounded ${
                 index === 0
-                  ? "bg-yellow-100 font-semibold"
+                  ? "bg-yellow-100 font-bold"
                   : index === 1
-                  ? "bg-gray-100"
+                  ? "bg-gray-100 font-semibold"
+                  : index === 2
+                  ? "bg-orange-100"
                   : ""
               }`}
             >
@@ -56,6 +58,7 @@ const Leaderboard = ({ refreshFlag }) => {
 };
 
 export default Leaderboard;
+
 
 
 

@@ -7,14 +7,23 @@ const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// ✅ CORS Configuration (Allow localhost + Vercel)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://claim-leaderboard.vercel.app'
+];
+
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // Routes
 app.use('/api', userRoutes);
 
-// Port
+// Port & Mongo URI
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/claim-leaderboard';
 
@@ -40,6 +49,7 @@ async function startServer() {
 }
 
 startServer();
+
 
 
 
