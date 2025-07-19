@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const UserSelect = ({ onClaim }) => {
+const API_BASE = import.meta.env.VITE_API_URL;
+
+const UserSelect = ({ onClaim, disabled = false }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/users")
+    axios.get(`${API_BASE}/api/users`)
       .then((res) => {
         setUsers(res.data);
         setLoading(false);
@@ -17,25 +19,30 @@ const UserSelect = ({ onClaim }) => {
       });
   }, []);
 
-  if (loading) return <p className="text-center">Loading users...</p>;
+  if (loading) return <p className="text-center text-gray-600">Loading users...</p>;
 
   if (users.length === 0) {
     return <p className="text-center text-red-500">No users found.</p>;
   }
 
   return (
-    <div className="mb-4 space-y-2">
+    <div className="mb-4 space-y-3">
       {users.map((user) => (
         <div
           key={user._id}
-          className="flex justify-between items-center bg-gray-100 p-3 rounded shadow-sm"
+          className="flex justify-between items-center bg-gray-100 px-4 py-2 rounded shadow-sm"
         >
           <span className="font-medium">{user.name}</span>
           <button
-            className="bg-blue-500 text-white px-4 py-1 rounded hover:bg-blue-600 transition"
+            disabled={disabled}
+            className={`px-4 py-1 rounded transition ${
+              disabled
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }`}
             onClick={() => onClaim(user._id)}
           >
-            Claim
+            {disabled ? "Processing..." : "Claim"}
           </button>
         </div>
       ))}
@@ -44,5 +51,6 @@ const UserSelect = ({ onClaim }) => {
 };
 
 export default UserSelect;
+
 
 
